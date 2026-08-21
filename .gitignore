@@ -1,0 +1,13 @@
+# Rust
+target/
+**/*.rsb
+*.pdb
+Cargo.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
