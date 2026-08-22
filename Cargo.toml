@@ -7,3 +7,11 @@ edition = "2024"
 mini-redis = "0.4.1"
 tokio = { version = "1", features = ["full"] }
 bytes = "1"
+
+[lib]
+name = "my_redis"
+path = "src/lib.rs"
+
+[[bin]]
+name = "server"
+path = "src/bin/server.rs"
