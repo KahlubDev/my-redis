@@ -52,8 +52,8 @@ impl Future for MySelect {
     type Output = ();
 
     fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        let mut rng = rand::thread_rng();
-
+        // FIXED: Use rand::rng() instead of rand::thread_rng() for rand 0.10+
+        let mut rng = rand::rng();
         self.branches.shuffle(&mut rng);
 
         for branch in &mut self.branches {
