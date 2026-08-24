@@ -9,9 +9,9 @@ tokio = { version = "1", features = ["full"] }
 bytes = "1"
 futures = "0.3"
 rand = "0.10.2"
-# ADDED: Required for Streams
-tokio-stream = "0.1"      # Provides Stream trait and adapters (take, filter, map)
-async-stream = "0.3"      # Provides the stream! macro
+tokio-stream = "0.1"      
+async-stream = "0.3"    
+tokio-util = { version = "0.7", features = ["rt"] }
 
 [lib]
 name = "my_redis"
