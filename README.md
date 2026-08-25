@@ -19,7 +19,7 @@ A custom Redis-compatible server built with **Tokio** in Rust. This project impl
 - **Testing**: `tokio-test`, `tokio` (with `test-util` feature)
 
 ## Project Structure
-
+```
 my-redis/
 ├── src/
 │   ├── lib.rs              # Library crate exposing core types
@@ -31,7 +31,7 @@ my-redis/
 │       └── ...             # Other demo binaries
 ├── Cargo.toml              # Dependencies and configuration
 └── README.md               # This file
-
+```
 # Quick Start
 
 ## Prerequisites
@@ -51,15 +51,20 @@ my-redis/
 2. **Run the server:**
      ```bash
      cargo run --bin server
-**Note:** To enable `tokio-console` integration, compile with the unstable flag:   ```bash
-RUSTFLAGS="--cfg tokio_unstable" cargo run --bin server
+**Note:** To enable `tokio-console` integration, compile with the unstable flag: 
+```bash``
+RUSTFLAGS="--cfg tokio_unstable" cargo run --bin server``
 
 
 3. ### Run the Client
-Run the client in a separate terminal:  ```bash cargo run --example hello-redis
+Run the client in a separate terminal: 
+```bash`
+ ``cargo run --example hello-redis``
 
 ### Run Unit Tests
-Execute the async unit tests (which use paused time for speed):  ```bash cargo test
+Execute the async unit tests (which use paused time for speed):  
+```bash``
+cargo test``
 
 
 ## What I Learned
