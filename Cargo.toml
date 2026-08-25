@@ -4,16 +4,22 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-mini-redis = "0.4.1"
-tokio = { version = "1", features = ["full"] }
+# Core dependencies (needed for library and binaries)
+tokio = { version = "1", features = ["full", "tracing", "test-util"] }
 bytes = "1"
+mini-redis = "0.4.1"
 futures = "0.3"
 rand = "0.10.2"
-tokio-stream = "0.1"      
-async-stream = "0.3"    
+tokio-stream = "0.1"
+async-stream = "0.3"
 tokio-util = { version = "0.7", features = ["rt"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+console-subscriber = "0.4"
+
+[dev-dependencies]
+# Test-only dependencies
+tokio-test = "0.4"
 
 [lib]
 name = "my_redis"

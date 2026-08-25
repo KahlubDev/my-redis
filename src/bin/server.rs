@@ -5,6 +5,10 @@ use bytes::Bytes;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
+// Import console-subscriber and tracing
+use console_subscriber;
+use tracing::info;
+
 // Type alias for the shared database
 type Db = Arc<Mutex<HashMap<String, Bytes>>>;
 
@@ -13,27 +17,37 @@ async fn process(socket: TcpStream, db: Db) {
 
     let mut connection = Connection::new(socket);
 
+    info!("New connection established, processing commands");
+
     // Handle the Result properly
     while let Ok(Some(frame)) = connection.read_frame().await {
         if let Ok(cmd) = mini_redis::Command::from_frame(frame) {
             let response = match cmd {
                 Set(cmd) => {
                     let mut guard = db.lock().unwrap();
+                    let key = cmd.key().to_string();
+                    info!("SET key: {}", key);
                     guard.insert(
-                        cmd.key().to_string(), 
+                        key, 
                         cmd.value().to_vec().into()
                     );
                     Frame::Simple("OK".to_string())
                 }
                 Get(cmd) => {
+                    let key = cmd.key().to_string();
                     let guard = db.lock().unwrap();
                     if let Some(value) = guard.get(cmd.key()) {
+                        info!("GET key: {} -> found", key);
                         Frame::Bulk(value.clone())
                     } else {
+                        info!("GET key: {} -> null", key);
                         Frame::Null
                     }
                 }
-                _ => panic!("unimplemented command: {:?}", cmd),
+                _ => {
+                    info!("Unimplemented command: {:?}", cmd);
+                    panic!("unimplemented command: {:?}", cmd);
+                }
             };
 
             if let Err(e) = connection.write_frame(&response).await {
@@ -49,8 +63,12 @@ async fn process(socket: TcpStream, db: Db) {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Initialize the console subscriber
+    // This must be called before any async tasks are spawned
+    console_subscriber::init();
+
     let listener = TcpListener::bind("127.0.0.1:6379").await?;
-    println!("Custom Mini-Redis server (with raw framing) listening on 127.0.0.1:6379");
+    info!("Custom Mini-Redis server (with raw framing) listening on 127.0.0.1:6379");
 
     let db = Arc::new(Mutex::new(HashMap::new()));
 
@@ -58,7 +76,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let (socket, _) = listener.accept().await?;
         let db = db.clone();
 
-        println!("New connection accepted");
+        info!("New connection accepted");
         
         tokio::spawn(async move {
             process(socket, db).await;

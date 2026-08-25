@@ -11,11 +11,10 @@ async fn main() {
     println!("=== Graceful Shutdown Demo ===\n");
     println!("Press Ctrl+C to trigger graceful shutdown.");
 
-    // 1. Create a CancellationToken and a TaskTracker
     let token = CancellationToken::new();
     let tracker = TaskTracker::new();
 
-        // 2. Spawn some background tasks
+    // Spawn tasks with 60-second durations
     for i in 0..5 {
         let task_token = token.clone();
 
@@ -23,28 +22,24 @@ async fn main() {
             println!("Task {} started.", i);
             
             tokio::select! {
-                // If token is cancelled, start shutdown procedure
                 _ = task_token.cancelled() => {
                     println!("Task {} received shutdown signal. Cleaning up...", i);
-                    // Simulate cleanup
                     sleep(Duration::from_millis(1000)).await; // 1 second cleanup
                     println!("Task {} finished cleanup.", i);
                 }
-                // Normal completion (30 seconds)
-                _ = sleep(Duration::from_millis(30000)) => {
+                _ = sleep(Duration::from_millis(60000)) => { // 60 seconds
                     println!("Task {} completed naturally.", i);
                 }
             }
         });
     }
 
-    // 3. Spawn a monitor task to detect Ctrl+C
+    // Spawn monitor task
     let monitor_token = token.clone();
     tokio::spawn(async move {
         match signal::ctrl_c().await {
             Ok(()) => {
                 println!("\n[Signal] Ctrl+C received. Initiating shutdown...");
-                // Cancel all tasks
                 monitor_token.cancel();
             }
             Err(err) => {
@@ -54,10 +49,7 @@ async fn main() {
         }
     });
 
-    // 4. Close the tracker to prevent new tasks
     tracker.close();
-
-    // 5. Wait for all tasks to finish
     println!("Waiting for tasks to finish gracefully...");
     tracker.wait().await;
 

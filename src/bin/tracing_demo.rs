@@ -3,7 +3,7 @@
 use std::time::Duration;
 use tokio::time::sleep;
 use tracing::{info, debug, warn, instrument, Level};
-use tracing_subscriber;
+use console_subscriber;
 
 // 1. Use the #[instrument] macro to automatically create a Span
 // This function will log:
@@ -41,14 +41,9 @@ async fn process_task(task_name: &str) -> Result<(), &'static str> {
 
 #[tokio::main]
 async fn main() {
-    // 2. Set up the Tracing Subscriber
-    // This must be done ONCE at the start of the application
-    tracing_subscriber::fmt()
-        .with_max_level(Level::DEBUG) // Set global log level
-        .with_target(true)             // Show module path
-        .with_thread_ids(true)         // Show thread ID (useful in multi-threaded)
-        .compact()                     // Use a compact, single-line format
-        .init();                       // Sets the global default
+    // 2. Set up the Console Subscriber (REPLACES the fmt subscriber)
+    // This MUST be the first thing called in main
+    console_subscriber::init();
 
     info!("Application starting up...");
 
