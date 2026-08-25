@@ -49,22 +49,22 @@ my-redis/
   
 
 2. **Run the server:**
-     ```bash```
+   
      ```cargo run --bin server```
    
 **Note:** To enable `tokio-console` integration, compile with the unstable flag: 
-```bash```
-```RUSTFLAGS="--cfg tokio_unstable" cargo run --bin server```
+
+``RUSTFLAGS="--cfg tokio_unstable" cargo run --bin server``
 
 
 4. ### Run the Client
 Run the client in a separate terminal: 
-```bash```
+
  ```cargo run --example hello-redis```
 
 ### Run Unit Tests
 Execute the async unit tests (which use paused time for speed):  
-```bash```
+
 ```cargo test```
 
 
