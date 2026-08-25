@@ -49,12 +49,15 @@ my-redis/
 cargo run --bin server
 ```
 **Note: To enable tokio-console integration, compile with the unstable flag:**
+```bash
+RUSTFLAGS="--cfg tokio_unstable" cargo run --bin server
 
-
-
-   
-
-
+```
+3. ###    Run the Client
+**Run the client in a separate terminal:**
+```bash
+cargo run --example hello-redis
+```
 ## What I Learned
 
 Building this project provided deep insights into the complexities and power of asynchronous Rust:
